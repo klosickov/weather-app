@@ -2,6 +2,7 @@ import UIKit
 
 protocol MenuViewControllerDelegate: AnyObject {
     func updateWeatherUI(with city: City)
+    func updateLocationCoordinates(latitude: Double, longitude: Double)
 }
 
 class SearchViewController: UIViewController {
@@ -13,6 +14,7 @@ class SearchViewController: UIViewController {
     // MARK: - lets / vars
     
     private let searchController = UISearchController(searchResultsController: nil)
+    private let heightForRow: CGFloat = 80.0
     
     private var isFiltering: Bool {
         return searchController.isActive && !isSearchBarEmpty
@@ -62,7 +64,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return heightForRow
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -91,7 +93,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
         tableView.deselectRow(at: indexPath, animated: true)
         delegate?.updateWeatherUI(with: model)
-        
+        delegate?.updateLocationCoordinates(latitude: model.lat, longitude: model.lng)
         navigationController?.popToRootViewController(animated: true)
     }
 }

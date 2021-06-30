@@ -34,7 +34,7 @@ class WeatherAppManager {
     
     // MARK: - DateFormatter
     
-    public func dateFormate(_ format: DateFormat, with timeResult: Double, for timezone_offset: Int) -> String {
+    public func dateFormate(_ format: DateFormat, from timeResult: Double, for timezone_offset: Int) -> String {
         let date = Date(timeIntervalSince1970: timeResult)
         let dateFormatter = DateFormatter()
         
@@ -58,6 +58,27 @@ class WeatherAppManager {
     public func getCelciusTemp(from temp: Double) -> String {
         let celciusTemp = String(format: "%.0f", temp-273.15) + "°"
         return celciusTemp
+    }
+    
+    // MARK: - Get weather status
+    
+    private func getWeatherStatus(from weather: [Weather]) -> String? {
+        guard let status = weather.first?.main else { return nil }
+        return status
+    }
+    
+    public func isTheRainExpected(_ data: [Weather]) -> Bool {
+        guard let status = getWeatherStatus(from: data) else { return false }
+        switch status {
+        case _ where status == WeatherStatus.clear.rawValue:
+            return false
+        case _ where status == WeatherStatus.clouds.rawValue:
+            return false
+        case _ where status == WeatherStatus.mist.rawValue:
+            return false
+        default:
+            return true
+        }
     }
     
     // MARK: - Get weather icon
